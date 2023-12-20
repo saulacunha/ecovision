@@ -21,4 +21,4 @@ if uploaded_file is not None:
             st.write(resultado)
 
         # Opcionalmente, puedes mostrar la imagen con las cajas delimitadoras dibujadas
-        # st.image(imagen_procesada, caption='Detecciones', use_column_width=True)
+        st.image(resultados, caption='Detecciones', use_column_width=True)
