@@ -5,3 +5,6 @@ pydeck
 streamlit
 torch
 torchvision
+onnxruntime
+opencv-python
+ultralytics
