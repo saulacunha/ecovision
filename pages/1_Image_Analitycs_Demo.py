@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 import requests
-import io, json
+import io, json, os
 from roboflow import Roboflow
 
 # Inicializar session_state
@@ -147,9 +147,12 @@ if uploaded_file is not None:
 
         # Preguntar si desea guardar los cambios
         if st.checkbox("¿Guardar en Roboflow?"):
-            buffered = io.BytesIO()
-            image.save(buffered, format="JPEG")
-            buffered.seek(0)
+            buffered_f = io.BytesIO()
+            image.save(buffered_f, format="JPEG")
+            img_byte = buffered_f.getvalue()
+            with open('img.jpg', 'wb') as f:
+                f.write(img_byte)
             annotations = crear_archivo_de_anotaciones(st.session_state.resultados['data'], etiquetas_actualizadas)
-            project.upload(image=buffered, annotations=annotations)
+            project.upload(image_path='img.jpg', annotations=annotations)
             st.success("Imagen y etiquetas guardadas en Roboflow")
+            # os.remove('img.jpg')
