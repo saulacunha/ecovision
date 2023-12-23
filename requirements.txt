@@ -8,3 +8,4 @@ torchvision
 onnxruntime
 opencv-python
 ultralytics
+roboflow
