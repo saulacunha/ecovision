@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 import requests
-import io
+import io, json
 from roboflow import Roboflow
 
 # Inicializar session_state
@@ -33,6 +33,26 @@ def redibujar_imagen_con_etiquetas(image, data, etiquetas):
         draw.text((x1, y1), etiqueta, fill="blue", font=font)
 
     return image
+
+def crear_archivo_de_anotaciones(data, etiquetas_actualizadas):
+    anotaciones = []
+    for item, etiqueta in zip(data, etiquetas_actualizadas):
+        box = item['box']
+        anotacion = {
+            "label": etiqueta,
+            "coordinates": {
+                "x": int((box['x1'] + box['x2']) / 2),
+                "y": int((box['y1'] + box['y2']) / 2),
+                "width": int(box['x2'] - box['x1']),
+                "height": int(box['y2'] - box['y1'])
+            }
+        }
+        anotaciones.append(anotacion)
+
+    with open("annotations.json", "w") as file:
+        json.dump(anotaciones, file)
+
+    return "annotations.json"
 
 # Lista de clases para etiquetar
 clases = [
@@ -125,11 +145,11 @@ if uploaded_file is not None:
             image = redibujar_imagen_con_etiquetas(image, st.session_state.resultados['data'], etiquetas_actualizadas)
             st.image(image, caption='Imagen con Etiquetas Actualizadas', use_column_width=True)
 
-
-            # Preguntar si desea guardar los cambios
-            if st.checkbox("¿Guardar en Roboflow?"):
-                buffered = io.BytesIO()
-                image.save(buffered, format="JPEG")
-                buffered.seek(0)
-                project.upload(image=buffered, annotations=etiquetas_actualizadas)
-                st.success("Imagen y etiquetas guardadas en Roboflow")
+        # Preguntar si desea guardar los cambios
+        if st.checkbox("¿Guardar en Roboflow?"):
+            buffered = io.BytesIO()
+            image.save(buffered, format="JPEG")
+            buffered.seek(0)
+            annotations = crear_archivo_de_anotaciones(st.session_state.resultados['data'], etiquetas_actualizadas)
+            project.upload(image=buffered, annotations=annotations)
+            st.success("Imagen y etiquetas guardadas en Roboflow")

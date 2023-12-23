@@ -24,28 +24,33 @@ def run():
         page_icon="👋",
     )
 
-    st.write("# Welcome to Ecovision! 👋")
+    st.write("# Bienvenido a Ecovision! 👋")
+    # Título principal y contexto del proyecto
+    st.header('Demostración de Detección de Objetos con YOLOv8')
+    # Descripción detallada del proyecto y su propósito
+    st.write('''
+    ECOVISION es el resultado de un ambicioso proyecto de Trabajo de Fin de Máster (TFM) que explora las fronteras de la inteligencia artificial aplicada a la sostenibilidad ambiental. Este sistema interactivo demuestra el poder de YOLOv8, la última innovación en detección de objetos, para identificar y analizar elementos en entornos costeros con una precisión y velocidad sin precedentes.
+    ''')
 
-    st.sidebar.success("Select a demo above.")
+    # Características clave del proyecto ECOVISION
+    st.subheader('Características Clave del Proyecto ECOVISION:')
+    st.write('''
+    - **Avanzado y Preciso**: Incorporando YOLOv8, ECOVISION detecta objetos con una precisión y velocidad revolucionarias.
+    - **Interfaz Intuitiva para Demostración**: La demostración de ECOVISION se presenta a través de una interfaz intuitiva desarrollada con Streamlit, diseñada para facilitar la interacción de los usuarios.
+    - **Aplicaciones en Tiempo Real**: ECOVISION es capaz de procesar imágenes y video en tiempo real, ilustrando las posibilidades de la tecnología en aplicaciones prácticas.
+    ''')
 
-    st.markdown(
-        """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-    """
-    )
+    # Sección de aplicaciones prácticas de ECOVISION
+    st.subheader('Aplicaciones Prácticas de ECOVISION:')
+    st.write('''
+    Como parte de un proyecto académico de vanguardia, ECOVISION tiene aplicaciones en el monitoreo ambiental, la gestión de recursos naturales y mucho más, demostrando la utilidad práctica de la inteligencia artificial en la sostenibilidad ambiental.
+    ''')
 
+    # Instrucciones para la demostración
+    st.subheader('Demostración Interactiva:')
+    st.write('''
+    Explora la capacidad de ECOVISION cargando tus propias imágenes y observa cómo el sistema identifica y clasifica objetos en tiempo real. Esta demostración es un escaparate del trabajo realizado y de las tecnologías implementadas durante el TFM.
+    ''')
 
 if __name__ == "__main__":
     run()
