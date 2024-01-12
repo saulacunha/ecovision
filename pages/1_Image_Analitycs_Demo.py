@@ -20,37 +20,51 @@ def redibujar_imagen_con_etiquetas(image, data, etiquetas):
     - etiquetas: Lista de etiquetas actualizadas.
     """
     draw = ImageDraw.Draw(image)
+    width, height = image.size
+
     try:
         font = ImageFont.truetype("arial.ttf", 15)
     except IOError:
         font = ImageFont.load_default()
 
     for i, item in enumerate(data):
-        box = item['box']
-        x1, y1, x2, y2 = box['x1'], box['y1'], box['x2'], box['y2']
+        # Asumiendo que las coordenadas están en formato relativo
+        x_center, y_center, box_width, box_height = item['xcenter'], item['ycenter'], item['width'], item['height']
+        x1 = int((x_center - box_width / 2) * width)
+        y1 = int((y_center - box_height / 2) * height)
+        x2 = int((x_center + box_width / 2) * width)
+        y2 = int((y_center + box_height / 2) * height)
+
         draw.rectangle([x1, y1, x2, y2], outline="blue", width=2)
         etiqueta = etiquetas[i]
         draw.text((x1, y1), etiqueta, fill="blue", font=font)
 
     return image
 
-def crear_archivo_de_anotaciones(data, etiquetas_actualizadas):
+
+def crear_archivo_de_anotaciones(data, etiquetas_actualizadas, img_width, img_height):
     anotaciones = []
     for item, etiqueta in zip(data, etiquetas_actualizadas):
-        box = item['box']
+        # Asumiendo que las coordenadas están en formato relativo
+        x_center, y_center, box_width, box_height = item['xcenter'], item['ycenter'], item['width'], item['height']
+        x1 = int((x_center - box_width / 2) * img_width)
+        y1 = int((y_center - box_height / 2) * img_height)
+        x2 = int((x_center + box_width / 2) * img_width)
+        y2 = int((y_center + box_height / 2) * img_height)
+
         anotacion = {
             "label": etiqueta,
             "coordinates": {
-                "x": int((box['x1'] + box['x2']) / 2),
-                "y": int((box['y1'] + box['y2']) / 2),
-                "width": int(box['x2'] - box['x1']),
-                "height": int(box['y2'] - box['y1'])
+                "x": int((x1 + x2) / 2),
+                "y": int((y1 + y2) / 2),
+                "width": x2 - x1,
+                "height": y2 - y1
             }
         }
         anotaciones.append(anotacion)
 
     with open("annotations.json", "w") as file:
-        json.dump(anotaciones, file)
+        json.dump(anotaciones, file, indent=4)
 
     return "annotations.json"
 
@@ -114,6 +128,7 @@ if uploaded_file is not None:
 
             if st.session_state.resultados['success']:
                 draw = ImageDraw.Draw(image)
+                width, height = image.size
                 try:
                     font = ImageFont.truetype("arial.ttf", 15)
                 except IOError:
@@ -121,8 +136,19 @@ if uploaded_file is not None:
 
                 # Dibujar las detecciones iniciales en la imagen
                 for item in st.session_state.resultados['data']:
-                    box = item['box']
-                    x1, y1, x2, y2 = box['x1'], box['y1'], box['x2'], box['y2']
+                    # Escalar las coordenadas al tamaño de la imagen
+                    x_center = item['xcenter'] * width
+                    y_center = item['ycenter'] * height
+                    box_width = item['width'] * width
+                    box_height = item['height'] * height
+
+                    # Calcular coordenadas del rectángulo
+                    x1 = x_center - (box_width / 2)
+                    y1 = y_center - (box_height / 2)
+                    x2 = x_center + (box_width / 2)
+                    y2 = y_center + (box_height / 2)
+
+                    # Dibujar rectángulo y etiqueta
                     draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
                     label = f"{item['name']} {item['confidence']:.2f}"
                     draw.text((x1, y1), label, fill="red", font=font)
