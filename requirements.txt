@@ -9,3 +9,4 @@ onnxruntime
 opencv-python
 ultralytics
 roboflow
+cv2
