@@ -178,7 +178,7 @@ if uploaded_file is not None:
             img_byte = buffered_f.getvalue()
             with open('img.jpg', 'wb') as f:
                 f.write(img_byte)
-            annotations = crear_archivo_de_anotaciones(st.session_state.resultados['data'], etiquetas_actualizadas)
+            annotations = crear_archivo_de_anotaciones(st.session_state.resultados['data'], etiquetas_actualizadas,image.width,image.height)
             project.upload(image_path='img.jpg', annotations=annotations)
             st.success("Imagen y etiquetas guardadas en Roboflow")
             # os.remove('img.jpg')
